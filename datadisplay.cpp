@@ -170,10 +170,12 @@ void DataDisplay::constructDisplayLine(const QByteArray &inData)
 {
     DisplayLine line;
 
+	// TOTO: should we insert m_newlineCounter-1 invalid timestamps here?
     if (m_previous_ended_with_nl) {
         m_timestamps->append(m_timestamp);
     }
 
+	m_newlineCounter = 0;
     for (int i = 0; i < inData.size(); i++) {
         unsigned int b = inData.at(i);
 		// print newline depending on m_linebreakChars
@@ -182,13 +184,17 @@ void DataDisplay::constructDisplayLine(const QByteArray &inData)
             if (b == '\r') {
                 if (m_displayCtrlCharacters)
                     line.data += QChar(0x240D);
-				if (m_linebreakChars.endsWith('\r'))
+				if (m_linebreakChars.endsWith('\r')){
 					line.data += '\n';
+					m_newlineCounter++;
+				}
             } else if (b == '\n') {
                 if (m_displayCtrlCharacters)
                     line.data += QChar(0x240A);
-				if (m_linebreakChars.endsWith('\n'))
+				if (m_linebreakChars.endsWith('\n')){
 					line.data += '\n';
+					m_newlineCounter++;
+				}
                 Q_ASSERT(i != (inData.size()));
             } else if (b == '\t') {
                 if (m_displayCtrlCharacters)
