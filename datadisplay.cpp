@@ -41,7 +41,7 @@ DataDisplay::DataDisplay(QWidget *parent)
     , m_hexLeftOver(0)
     , m_displayHex(false)
     , m_displayCtrlCharacters(false)
-	, m_linebreakChars("\r")
+	, m_linebreakChars("\n")
     , m_previous_ended_with_nl(true)
 {
     setupTextFormats();
@@ -170,12 +170,10 @@ void DataDisplay::constructDisplayLine(const QByteArray &inData)
 {
     DisplayLine line;
 
-	// TOTO: should we insert m_newlineCounter-1 invalid timestamps here?
     if (m_previous_ended_with_nl) {
         m_timestamps->append(m_timestamp);
     }
 
-	m_newlineCounter = 0;
     for (int i = 0; i < inData.size(); i++) {
         unsigned int b = inData.at(i);
 		// print newline depending on m_linebreakChars
@@ -184,16 +182,14 @@ void DataDisplay::constructDisplayLine(const QByteArray &inData)
             if (b == '\r') {
                 if (m_displayCtrlCharacters)
                     line.data += QChar(0x240D);
-				if (m_linebreakChars.endsWith('\r')){
+				if (m_linebreakChars.endsWith('\r')) {
 					line.data += '\n';
-					m_newlineCounter++;
 				}
             } else if (b == '\n') {
                 if (m_displayCtrlCharacters)
                     line.data += QChar(0x240A);
-				if (m_linebreakChars.endsWith('\n')){
+				if (m_linebreakChars.endsWith('\n')) {
 					line.data += '\n';
-					m_newlineCounter++;
 				}
                 Q_ASSERT(i != (inData.size()));
             } else if (b == '\t') {
@@ -297,10 +293,7 @@ void DataDisplay::setDisplayCtrlCharacters(bool displayCtrlCharacters)
 	m_displayCtrlCharacters = displayCtrlCharacters;
 }
 
-void DataDisplay::setLinebreakChars(const QString & chars)
-{
-	m_linebreakChars = chars;
-}
+void DataDisplay::setLinebreakChars(const QString &chars) { m_linebreakChars = chars; }
 
 QTextDocument *DataDisplay::getTextDocument() { return m_dataDisplay->document(); }
 

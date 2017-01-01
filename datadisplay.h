@@ -121,12 +121,6 @@ private:
      */
     QList<DisplayLine> m_data;
 
-	/**
-	 * @brief newlineCounter for keeping
-	 * timestamps and data aligned when newlines appear within a datablock.
-	 * (TODO)
-	 */
-	int m_newlineCounter;
     bool m_previous_ended_with_nl;
 
     QTextCharFormat *m_format_data;
